@@ -49,7 +49,21 @@ const factsList = document.querySelector(".facts-list");
 
 // Create DOM elements: Render facts in list
 factsList.innerHTML = "";
-createFactsList(initialFacts);
+
+// Load data from Supabase API
+loadFacts();
+
+async function loadFacts() {
+    const res = await fetch(process.env.REACT_APP_SUPABASE_API_URL, {
+        headers: {
+            apikey: process.env.REACT_APP_SUPABASE_API_KEY,
+            authorization: `Bearer ${process.env.REACT_APP_SUPABASE_BEARER_TOKEN}`,
+        },
+    });
+    const data = await res.json();
+    // const filteredData = data.filter((fact) => fact.category === "technology");
+    createFactsList(data);
+}
 
 function createFactsList(dataArray) {
     const htmlArr = dataArray.map(
@@ -62,10 +76,11 @@ function createFactsList(dataArray) {
                 >(Source)</a
             >
             </p>
-            <span class="tag" style="background-color: #3b82f6">${fact.category}</span>
+            <span class="tag" style="background-color: ${
+                CATEGORIES.find((cat) => cat.name === fact.category).color
+            }">${fact.category}</span>
         </li>`
     );
-    console.log(htmlArr);
     const html = htmlArr.join("");
     factsList.insertAdjacentHTML("afterbegin", html);
 }
