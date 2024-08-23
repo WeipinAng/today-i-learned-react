@@ -275,6 +275,9 @@ function Fact({ factObj, setFacts }) {
     // const factObj = props.factObj;
 
     const [isUpdating, setIsUpdating] = useState(false);
+    const isDisputed =
+        factObj.votesInteresting + factObj.votesMindblowing <
+        factObj.votesFalse;
 
     async function handleVote(columnName) {
         setIsUpdating(true);
@@ -294,6 +297,9 @@ function Fact({ factObj, setFacts }) {
     return (
         <li className="fact">
             <p>
+                {isDisputed ? (
+                    <span className="disputed">[⛔ DISPUTED]</span>
+                ) : null}
                 {factObj.text}
                 <a className="source" href={factObj.source} target="_blank">
                     (Source)
